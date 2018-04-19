@@ -1,0 +1,3 @@
+/home/kimberlyc/CLionProjects/mserver/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/kimberlyc/CLionProjects/mserver/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/kimberlyc/CLionProjects/mserver/cmake-build-debug/CMakeFiles/mserver.dir

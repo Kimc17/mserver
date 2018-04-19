@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/mserver.dir/mserver.cpp.o  -o mserver 
