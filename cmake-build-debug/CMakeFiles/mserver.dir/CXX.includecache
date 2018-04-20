@@ -17,6 +17,12 @@ iostream
 /home/kimberlyc/CLionProjects/mserver/mserver.cpp
 mserver.h
 /home/kimberlyc/CLionProjects/mserver/mserver.h
+List.h
+/home/kimberlyc/CLionProjects/mserver/List.h
+
+/home/kimberlyc/CLionProjects/mserver/mserver.h
+EstructuraData.h
+/home/kimberlyc/CLionProjects/mserver/EstructuraData.h
 stdlib.h
 -
 EstructuraData.h
@@ -41,10 +47,4 @@ pthread.h
 -
 jsoncpp/json/json.h
 -
-List.h
-/home/kimberlyc/CLionProjects/mserver/List.h
-
-/home/kimberlyc/CLionProjects/mserver/mserver.h
-EstructuraData.h
-/home/kimberlyc/CLionProjects/mserver/EstructuraData.h
 

@@ -1,21 +1,5 @@
 #include "mserver.h"
-#include <stdlib.h>
-#include "EstructuraData.h"
-#include <string>       // std::string
-#include <iostream>     // std::cout
-#include <sstream>
-#include<stdio.h>
-#include<string.h>    //strlen
-#include<sys/socket.h>
-#include<arpa/inet.h> //inet_addr
-#include<unistd.h>    //Permite el write
-#include<pthread.h> //Biblioteca de Threads , asociada a lpthread
-#include <jsoncpp/json/json.h>
 #include "List.h"
-
-
-
-
 /* Pasos para la ejecucion del servidor:
  * 1. Abrir una terminal
  * 2. Cambiar el directorio con: cd C-
@@ -70,6 +54,8 @@ int Server::crear() {
     memoria = (char*)(malloc(sizeof(char)*1024));
 
     metaData=  new List<EstructuraData>;
+
+
 
 
 
@@ -153,10 +139,6 @@ void *manejador_conexion(void *socket_desc) {
         Json::Reader reader;
         Json::Value obj;
         reader.parse(mensaje, obj);
-        cout << "nombre: " << obj["nombre"].asString() << endl;
-        cout << "tamaño: " << obj["tamanio"].asString() << endl;
-        cout << "tipo: " << obj["tipo"].asString() << endl;
-        cout << "valor: " << obj["valor"].asString() << endl;
 
         string Ptr;
         if (top < limite) {
@@ -167,10 +149,6 @@ void *manejador_conexion(void *socket_desc) {
             a >> tamanio;
             memoria += tamanio;
             top += tamanio;
-
-            string valores = obj["valor"].asString();
-
-
             string tipo = obj["tipo"].asString();
 
             stringstream c(obj["referencias"].asString());
@@ -178,9 +156,13 @@ void *manejador_conexion(void *socket_desc) {
             c >> referencias;
 
             string tipoReferencia = obj["TipoReferencia"].asString();
+            string valores;
 
-
+            stringstream s(obj["tamanio"].asString());
+            float scope = 0;
+            s >> scope;
             if (tipo == "char") {
+                string val = obj["valor"].asString();
                 *(memoria + tamanio) = valores[1];
 
                 std::ostringstream oss;
@@ -188,12 +170,15 @@ void *manejador_conexion(void *socket_desc) {
                 std::string ptr = oss.str();
                 Ptr = ptr;
                 std::cout << "Se obtiene" << ptr << '\n';
+                valores=val;
 
             } else if (tipo == "int") {
+                string val = obj["valor"].asString();
                 stringstream a(obj["tamanio"].asString());
                 int valor = 0;
                 a >> valor;
                 *(int *) (memoria + tamanio) = valor;
+
 
 
                 std::ostringstream oss;
@@ -201,9 +186,35 @@ void *manejador_conexion(void *socket_desc) {
                 std::string ptr = oss.str();
                 Ptr = ptr;
                 std::cout << "Se obtiene" << ptr << '\n';
+                valores=val;
+
+            }/* else if(tipo == "borrar") {
+                for (int i = 0; i < metaData->length(); i++) {
+
+                    if (scope ==metaData->Get(i).getScope()){
+                        stringstream c(metaData->Get(i).getPtr());
+                        int temp= 0;
+                        c >> temp;
+                        memoria-= metaData->Get(i).getTamanio();
+                        top-= metaData->Get(i).getTamanio();
+                        delete(metaData->Get(i));
+                        for(int b = 0; b < metaData->length(); b++) {
+                            *(string *) (temp - tamanio) = metaData->Get(i+b).getValor();
+                            std::ostringstream oss;
+                            oss << (string *) (temp - tamanio);
+                            std::string ptr = oss.str();
+                            metaData->Get(i+b).setPtr(ptr);
+                            stringstream e(metaData->Get(i+b).getPtr());
+                            e >> temp;
+
+                        }
+
+                    }
+                }
 
 
-            } else if (tipo == "float") {
+            }*/else if (tipo == "float") {
+                string val = obj["valor"].asString();
                 stringstream a(obj["tamanio"].asString());
                 float valor = 0;
                 a >> valor;
@@ -216,16 +227,35 @@ void *manejador_conexion(void *socket_desc) {
 
                 std::cout << "Se obtiene" << ptr << '\n';
 
+                valores=val;
+            } else if(tipo == "reference"){
 
-            } else if(tipo == "string"){
-                *(string *) (memoria + tamanio) = valores;
-                std::ostringstream oss;
-                oss << (void *) (string *) (memoria + tamanio);
-                std::string ptr = oss.str();
-                Ptr = ptr;
+                if (metaData->isEmpty()){
+                    cout<< "fallo: lista vacia";
+                }else {
+                    for (int i = 0; i < metaData->length(); i++) {
+                        string val = metaData->Get(i).getPtr();
+                        valores=val;
+
+                        if (metaData->Get(i).getValor() == obj["valor"].asString()) {
+
+                                *(string *) (memoria + tamanio) = metaData->Get(i).getPtr();
+                                std::ostringstream oss;
+                                oss << (void *) (string *) (memoria + tamanio);
+                                std::string ptr = oss.str();
+                                Ptr = ptr;
+                            int c= metaData->Get(i).getReferencias();
+                            c++;
+                            metaData->Get(i).setReferencias(c);
+
+                            }
+                        }
+                    }
+
+                }
 
 
-            } else if (tipo == "long");
+            else if (tipo == "long");
             {
 
                 stringstream a(obj["tamanio"].asString());
@@ -241,9 +271,10 @@ void *manejador_conexion(void *socket_desc) {
                 std::cout << "Se obtiene" << ptr << '\n';
             }
 
+
             memoria += tamanio;
             EstructuraData estruct;
-            estruct.setAtributos(nombre, Ptr, valores, tipo, referencias, tipoReferencia);
+            estruct.setAtributos(nombre, Ptr, valores, tipo, referencias, tipoReferencia,scope, tamanio);
 
             metaData->Insert(estruct);
 
@@ -292,5 +323,6 @@ void *manejador_conexion(void *socket_desc) {
         perror("Fallo");
     }
 
+    }
 
-}
+

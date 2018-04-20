@@ -122,7 +122,7 @@ t_data List<t_data>::Get(int index)
         if(size < index)
         {
             cout << "ERROR: Index is major than the size of list";
-           return 1;
+
         }
         while((i<index) && (nodo))
         {
@@ -133,7 +133,7 @@ t_data List<t_data>::Get(int index)
 
     }
     cout << "Empty list" << endl;
-    return 1;
+
 }
 
 template<class t_data>

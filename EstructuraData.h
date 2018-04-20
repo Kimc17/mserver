@@ -13,22 +13,31 @@ using namespace std;
 class EstructuraData {
 private:
 
-    string nombre, tipo, tipoReferencia,valor;
-    int referencias;
-    string ptr;
-
+    string nombre, tipo, tipoReferencia,valor,ptr;
+    int referencias,scope, tamanio;
+public:
+    int getTamanio() const {
+        return tamanio;
+    }
 
 public:
-    void setAtributos(string Nombre, string Ptr, string Valor, string Tipo, int Referencias, string TipoReferencia) {
+    void setAtributos(string Nombre, string Ptr, string Valor, string Tipo, int Referencias, string TipoReferencia, int Scope, int Tamanio) {
             this->nombre = Nombre;
             this->ptr = Ptr;
             this->tipo = Tipo;
             this->valor = Valor;
             this->referencias = Referencias;
-            this -> ptr=Ptr;
             this->tipoReferencia = TipoReferencia;
+            this -> scope=Scope;
 
+    }
 
+    void setPtr( string ptr) {
+        EstructuraData::ptr = ptr;
+    }
+
+    void setReferencias(int referencias) {
+        EstructuraData::referencias = referencias;
     }
 
     string getNombre() {
@@ -45,6 +54,9 @@ public:
 
     int getReferencias() {
             return referencias;
+    }
+    int getScope() {
+        return scope;
     }
 
     string getValor() {
